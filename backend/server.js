@@ -16,6 +16,12 @@ app.get("/", (req, res) => {
 
   res.send("Restaurant Booking API is running...");
 });
+app.get("/home", (req, res) => {
+   
+
+    res.send("Restaurant Booking API is Home is running...");
+  });
+
 
 const PORT = process.env.PORT || 5000;
 
