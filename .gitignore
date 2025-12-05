@@ -5,6 +5,7 @@
 .env.local
 .env.development
 .env.production
+.gitignore
 
 # =========================
 # NODE / BACKEND
@@ -43,7 +44,7 @@ Thumbs.db
 # =========================
 logs/
 *.log
-.txt
+Log.txt
 
 # =========================
 # TEST COVERAGE
