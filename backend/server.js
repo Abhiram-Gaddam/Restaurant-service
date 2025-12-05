@@ -3,23 +3,49 @@ const cors = require("cors");
 require("dotenv").config();
 const connectDB = require("./config/db");
 const User = require("./models/User");
+const authRoutes = require("./routes/authRoutes");
+const { verifyToken } = require("./middleware/authMiddleware");
+const tableRoutes = require("./routes/tableRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
+const preBookingRoutes = require("./routes/preBookingRoutes");
 
 
-connectDB();
+
+connectDB();//establish mongodb connection 
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+app.use(cors()); // for cross origin 
+app.use(express.json());// to parse json
+app.use("/api/auth", authRoutes); // Login and Register Routes
+app.use("/api/tables", tableRoutes);//Table Details
+app.use("/api/bookings", bookingRoutes);// Booking Details
+app.use("/api/prebookings", preBookingRoutes);
 
-app.get("/", (req, res) => {
-   
+  //default route
+  app.get("/", (req, res) => {
+    
 
-  res.send("Restaurant Booking API is running...");
-});
-app.get("/home", (req, res) => {
-   
+    res.send("Restaurant Booking API is running...");
+  });
+  
+  app.get("/getuser", async (req,res)=>  {
+    try{
+      const users = await User.find() ;
+      res.send(JSON.stringify(users)) ; 
+    }catch(e){
+      res.send("Error in Fetching Users  ", e.message);
+    }
+      
+  } );
 
-    res.send("Restaurant Booking API is Home is running...");
+
+
+// Protected Route
+  app.get("/api/protected", verifyToken, (req, res) => {
+    res.json({
+      message: "You have accessed a protected route",
+      user: req.user
+    });
   });
 
 
