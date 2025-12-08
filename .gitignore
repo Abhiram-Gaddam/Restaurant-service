@@ -5,7 +5,7 @@
 .env.local
 .env.development
 .env.production
-.gitignore
+ 
 
 # =========================
 # NODE / BACKEND
@@ -50,3 +50,4 @@ Log.txt
 # TEST COVERAGE
 # =========================
 coverage/
+api-tester.html

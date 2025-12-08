@@ -28,6 +28,10 @@ const preBookingSchema = new mongoose.Schema(
       type: String,
       enum: ["requested", "approved", "rejected"],
       default: "requested"
+    },
+    isActive : {
+        type: Boolean,
+        default: true
     }
   },
   { timestamps: true }

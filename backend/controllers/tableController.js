@@ -13,7 +13,7 @@ exports.createTable = async (req, res) => {
 // GET ALL TABLES (USER + ADMIN)
 exports.getTables = async (req, res) => {
   try {
-    const tables = await Table.find();
+    const tables = await Table.find({ isActive: true });
     res.json(tables);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -37,7 +37,7 @@ exports.updateTable = async (req, res) => {
 // DELETE TABLE (ADMIN)
 exports.deleteTable = async (req, res) => {
   try {
-    await Table.findByIdAndDelete(req.params.id);
+    await Table.findByIdAndUpdate(req.params.id, { isActive: false });
     res.json({ message: "Table deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
