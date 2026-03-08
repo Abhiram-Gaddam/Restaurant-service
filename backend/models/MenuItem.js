@@ -9,8 +9,9 @@ const menuItemSchema = new mongoose.Schema(
       ref: "Category"
     },
     description: String,
-    isAvailable: { type: Boolean, default: true }, // out-of-stock toggle
-    isActive: { type: Boolean, default: true }     // soft delete
+    image: { type: String },
+    isAvailable: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: true }
   },
   { timestamps: true }
 );

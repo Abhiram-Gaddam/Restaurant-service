@@ -40,3 +40,26 @@ exports.deleteMenuItem = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+// GET MENU ITEM BY ID
+exports.getMenuItemById = async (req, res) => {
+  try {
+    const item = await MenuItem.findById(req.params.id).populate("category");
+    if (!item) return res.status(404).json({ message: "Menu item not found" });
+    res.json(item);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// GET MENU ITEMS BY CATEGORY
+exports.getMenuItemsByCategory = async (req, res) => {
+  try {
+    const items = await MenuItem.find({ 
+      category: req.params.categoryId, 
+      isActive: true 
+    });
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

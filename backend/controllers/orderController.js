@@ -185,3 +185,31 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+// GET ORDER BY ID
+exports.getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id)
+      .populate("table")
+      .populate("items.menuItem")
+      .populate("user", "-password");
+    if (!order) return res.status(404).json({ message: "Order not found" });
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+// PUT /orders/:id/items
+exports.modifyOrderItems = async (req, res) => {
+  try {
+    const { items } = req.body;
+    const order = await Order.findOne({ _id: req.params.id, user: req.user.id, orderStatus: "pending" });
+    if (!order) return res.status(400).json({ message: "Order not found or cannot be modified" });
+    
+    // Simplistic recalculation (Requires fetching menu items & prices in a real scenario)
+    order.items = items; 
+    await order.save();
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

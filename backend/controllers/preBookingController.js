@@ -108,14 +108,14 @@ exports.getAllPreBookings = async (req, res) => {
       const query = { isActive: true };
       if (status) query.status = status;
   
-      const bookings = await Booking.find(query)
+      const bookings = await PreBooking.find(query)
         .populate("user", "-password")
         .populate("table")
         .skip((page - 1) * limit)
         .limit(limit)
         .sort({ createdAt: -1 });
   
-      const total = await Booking.countDocuments(query);
+      const total = await PreBooking.countDocuments(query);
   
       res.json({
         total,
@@ -130,6 +130,7 @@ exports.getAllPreBookings = async (req, res) => {
   
 
 // ADMIN APPROVES / REJECTS PREBOOKING
+// ADMIN APPROVES / REJECTS PREBOOKING
 exports.updatePreBookingStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -140,7 +141,6 @@ exports.updatePreBookingStatus = async (req, res) => {
       { new: true }
     );
 
-    // If approved, convert it into real booking for that date
     if (status === "approved") {
       await Table.findByIdAndUpdate(preBooking.table, {
         status: "booked"
@@ -148,13 +148,12 @@ exports.updatePreBookingStatus = async (req, res) => {
     }
 
     if (status === "cancelled") {
-        await preBooking.findByIdAndUpdate(req.params.id, { isActive: false });
+        await PreBooking.findByIdAndUpdate(req.params.id, { isActive: false });
       
         await Table.findByIdAndUpdate(preBooking.table, {
           status: "available"
         });
       }
-      
 
     res.json(preBooking);
   } catch (err) {

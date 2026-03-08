@@ -12,18 +12,20 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const menuItemRoutes = require("./routes/menuItemRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const billRoutes = require("./routes/billRoutes"); 
+const analyticsRoutes = require("./routes/analyticsRoutes");
+
 
 connectDB();//establish mongodb connection 
 
 const app = express();
-app.use(cors()); // for cross origin 
+app.use(cors("*")); // for cross origin 
 app.use(express.json());// to parse json
  
 app.use("/api/auth", authRoutes); // Login and Register Routes
 app.use("/api/tables", tableRoutes);//Table Details
 app.use("/api/bookings", bookingRoutes);// Booking Details
 app.use("/api/prebookings", preBookingRoutes);// PreBooking Details
- 
+app.use("/api/analytics", analyticsRoutes); 
 app.use("/api/categories", categoryRoutes);// Handles Catagories
 app.use("/api/menu-items", menuItemRoutes);//Menu Details
 app.use("/api/orders", orderRoutes);//Handles Orders
@@ -61,4 +63,4 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});
+}); 

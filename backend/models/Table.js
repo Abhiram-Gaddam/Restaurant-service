@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const tableSchema = new mongoose.Schema(
   {
     tableNumber: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     },

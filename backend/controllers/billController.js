@@ -104,3 +104,24 @@ exports.markBillPaid = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+// GET /bills/user
+exports.getUserBills = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.user.id }).select('_id');
+    const orderIds = orders.map(o => o._id);
+    const bills = await Bill.find({ order: { $in: orderIds }, isActive: true }).populate("order");
+    res.json(bills);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// GET /bills/admin
+exports.getAllBills = async (req, res) => {
+  try {
+    const bills = await Bill.find({ isActive: true }).populate("order");
+    res.json(bills);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

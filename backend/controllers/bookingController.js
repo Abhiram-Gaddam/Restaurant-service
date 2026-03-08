@@ -14,42 +14,7 @@ function timeToMinutes(timeStr) {
 
 
 // USER CREATE BOOKING
-// exports.createBooking = async (req, res) => {
-//   try {
-
-//     const { table, date, time } = req.body;
-
-//     // ✅ CONFLICT CHECK
-//     const existingBooking = await Booking.findOne({
-//       table,
-//       date,
-//       time,
-//       status: { $ne: "cancelled" },
-//       isActive: true
-//     });
-
-//     if (existingBooking) {
-//       return res.status(400).json({
-//         message: "This table is already booked for the selected time"
-//       });
-//     }
-
-
  
-//     const booking = await Booking.create({
-//       user: req.user.id,
-//       table,
-//       date,
-//       time
-//     });
-
-//     await Table.findByIdAndUpdate(table, { status: "booked" });
-
-//     res.status(201).json(booking);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
 exports.createBooking = async (req, res) => {
   try {
     const { table, date, time } = req.body;
@@ -96,8 +61,11 @@ exports.createBooking = async (req, res) => {
 // USER BOOKINGS
 exports.getUserBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find({ user: req.user.id })
-      .populate("table");
+    console.log("Fetching bookings for User ID:", req.user.id);
+    const today = new Date().toISOString().split('T')[0];
+    const bookings = await Booking.find({ user: req.user.id ,today })
+      .populate("table") 
+      .sort({ createdAt: -1 });
 
     res.json(bookings);
   } catch (err) {
@@ -157,6 +125,31 @@ exports.updateBookingStatus = async (req, res) => {
 }
 
 
+    res.json(booking);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+// GET BOOKING BY ID
+exports.getBookingById = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate("table user", "-password");
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
+    res.json(booking);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+// PUT /bookings/:id/cancel
+exports.cancelUserBooking = async (req, res) => {
+  try {
+    const booking = await Booking.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { status: "cancelled", isActive: false },
+      { new: true }
+    );
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
+    await Table.findByIdAndUpdate(booking.table, { status: "available" });
     res.json(booking);
   } catch (err) {
     res.status(500).json({ message: err.message });

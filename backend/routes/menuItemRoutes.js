@@ -4,13 +4,16 @@ const {
   createMenuItem,
   getMenuItems,
   updateMenuItem,
-  deleteMenuItem
+  deleteMenuItem,
+  getMenuItemById,
+  getMenuItemsByCategory
 } = require("../controllers/menuItemController");
-
 const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
 router.post("/", verifyToken, isAdmin, createMenuItem);
-router.get("/", verifyToken, getMenuItems);
+router.get("/",    getMenuItems);
+router.get("/category/:categoryId",   getMenuItemsByCategory);
+router.get("/:id",   getMenuItemById);
 router.put("/:id", verifyToken, isAdmin, updateMenuItem);
 router.delete("/:id", verifyToken, isAdmin, deleteMenuItem);
 

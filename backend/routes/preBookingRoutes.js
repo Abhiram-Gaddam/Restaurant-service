@@ -11,7 +11,7 @@ const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
 // USER
 router.post("/", verifyToken, createPreBooking);
-router.get("/user", verifyToken, getUserPreBookings);
+router.get("/user", verifyToken,  getUserPreBookings);
 
 // ADMIN
 router.get("/admin", verifyToken, isAdmin, getAllPreBookings);

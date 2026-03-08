@@ -4,17 +4,17 @@ const {
   createOrder,
   getUserOrders,
   getAllOrders,
-  updateOrderStatus
+  updateOrderStatus,
+  getOrderById,
+  modifyOrderItems
 } = require("../controllers/orderController");
-
 const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
-// USER
 router.post("/", verifyToken, createOrder);
 router.get("/user", verifyToken, getUserOrders);
-
-// ADMIN
 router.get("/admin", verifyToken, isAdmin, getAllOrders);
+router.get("/:id", verifyToken, getOrderById);
+router.put("/:id/items", verifyToken, modifyOrderItems);
 router.put("/:id/status", verifyToken, isAdmin, updateOrderStatus);
 
 module.exports = router;

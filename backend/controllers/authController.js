@@ -62,3 +62,36 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// GET CURRENT USER
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// GET ALL USERS (ADMIN)
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// Note: Logout is typically handled on the client-side by deleting the JWT.
+// POST /auth/reset-password
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    const user = await User.findOneAndUpdate({ email }, { password: hashedPassword }, { new: true });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json({ message: "Password reset successful" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
